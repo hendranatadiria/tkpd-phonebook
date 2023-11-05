@@ -1,4 +1,4 @@
-import { font } from "@/config/theme";
+import { colors, font } from "@/config/theme";
 import styled from "@emotion/styled";
 
 const TextHeader = styled.h1`
@@ -8,6 +8,7 @@ const TextHeader = styled.h1`
   text-align: left;
   padding-top: 2rem;
   padding-bottom: 1rem;
+  color: ${colors.textPrimary}
   `;
 
 export default TextHeader;

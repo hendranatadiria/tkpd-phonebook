@@ -1,9 +1,8 @@
-import { GET_PHONEBOOK } from '@/services/phonebook';
-import { useQuery } from '@apollo/client/react';
 import styled from '@emotion/styled';
 import React from 'react'
 import { BeatLoader } from 'react-spinners';
 import ContactCard from './ContactCard';
+import { useAppSelector } from '@/redux';
 
 const Alert = styled.div`
   background-color: #f44336;
@@ -13,15 +12,23 @@ const Alert = styled.div`
   margin-bottom: 1rem;
 `;
 
-export default function ContactList() {
-  const { loading, error, data } = useQuery(GET_PHONEBOOK);
-  console.log(loading, error, data);
+const Center = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
+export default function ContactList({loading, error, data} : {loading: boolean, error?: string, data: Contact[]}) {
+  const phoneBookState = useAppSelector(state => state.phonebook);
 
   return (
     <div>
-      <BeatLoader loading={loading} />
-      {Boolean(error) && <Alert>{error?.message}</Alert> }
-      {data?.contact?.map((contact: any) => {
+      <Center>
+        <BeatLoader loading={loading} />
+      </Center>
+      {Boolean(error) && <Alert>{error}</Alert> }
+      {data.map((contact) => {
       return (<ContactCard 
         key={contact.id}
        firstName={contact.first_name}

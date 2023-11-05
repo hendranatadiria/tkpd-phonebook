@@ -1,0 +1,1 @@
+export const MAX_CONTACT_PER_PAGE = 10;

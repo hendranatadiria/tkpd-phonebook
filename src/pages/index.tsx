@@ -1,8 +1,11 @@
 import styled from '@emotion/styled'
-import { Card, CardTitle, TextField, TextHeader } from '@/components/commons';
+import { AllCapsHeader, Card, CardTitle, Separator, TextField, TextHeader } from '@/components/commons';
 import { font } from '@/config/theme';
 import ContactList from '@/components/phonebook/ContactList';
-import FavoriteList from '@/components/phonebook/FavoriteList';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '@/redux';
+import { fetchContacts } from '@/redux/slices/phonebook';
+import PaginationButton from '@/components/phonebook/PaginationButton';
 
 const Main = styled.main`
   max-width: 600px;
@@ -13,7 +16,7 @@ const Main = styled.main`
 
   const SearchField = styled(TextField)`
   margin-bottom: 1rem;
-  background-color: #e0e0e0;
+  background-color: #f5f5f5;
   padding: 1rem;
   border: none;
   &::placeholder {
@@ -25,6 +28,13 @@ const Main = styled.main`
   `
 
 export default function Home() {
+  const dispatch = useAppDispatch();
+  const state = useAppSelector(state => state.phonebook)
+
+  useEffect(() => {
+    dispatch(fetchContacts(state.currentPage));
+  }, [dispatch, state.currentPage])
+  
 
   return (
     <Main
@@ -32,8 +42,18 @@ export default function Home() {
     >
       <TextHeader>Phonebook</TextHeader>
       <SearchField name="searchBox" placeholder='Search your contact here...' />
-      <FavoriteList />
-      <ContactList />
+      
+      { state.favoriteIds.length > 0 && (
+      <>
+        <AllCapsHeader>Favorites</AllCapsHeader>
+        <ContactList loading={state.loading} data={state.favoriteContacts} error={state.currentPage === 1 ? state.error : undefined}/>
+        <Separator />
+      </>
+      )}
+
+      <AllCapsHeader>Contacts</AllCapsHeader>
+      <ContactList loading={state.loading} data={state.regularContacts} error={state.currentPage !== 1 ? state.error : undefined}/>
+      <PaginationButton />
 
     </Main>
   )
