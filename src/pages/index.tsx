@@ -2,9 +2,9 @@ import styled from '@emotion/styled'
 import { AllCapsHeader, Separator, TextField, TextHeader } from '@/components/commons';
 import { font } from '@/config/theme';
 import ContactList from '@/components/phonebook/ContactList';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux';
-import { addFavoriteContact, fetchContacts, fetchFavorites, removeFavoriteContact } from '@/redux/slices/phonebook';
+import { addFavoriteContact, clearError, fetchContacts, fetchFavorites, removeFavoriteContact } from '@/redux/slices/phonebook';
 import PaginationButton from '@/components/phonebook/PaginationButton';
 
 const Main = styled.main`
@@ -38,6 +38,10 @@ export default function Home() {
   useEffect(() => {
     dispatch(fetchFavorites());
   }, [dispatch])
+
+  const closeErr = useCallback(() => {
+    dispatch(clearError());
+  }, [dispatch]);
   
 
   return (
@@ -47,16 +51,24 @@ export default function Home() {
       <TextHeader>Phonebook</TextHeader>
       <SearchField name="searchBox" placeholder='Search your contact here...' />
       
-      { state.favoriteIds.length > 0 && (
+      { (state.favoriteIds.length > 0 && state.favoriteContacts.length > 0) && (
       <>
         <AllCapsHeader>Favorites</AllCapsHeader>
-        <ContactList loading={state.loading} data={state.favoriteContacts} error={state.currentPage === 1 ? state.error : undefined} onCardClick={(id) => dispatch(removeFavoriteContact(id))}/>
+        <ContactList loading={state.loading} data={state.favoriteContacts} 
+        error={state.currentPage === 1 ? state.error : undefined} 
+        onCardClick={(id) => dispatch(removeFavoriteContact(id))}
+        handleErrorClose={closeErr}
+        />
         <Separator />
       </>
       )}
 
       <AllCapsHeader>Contacts</AllCapsHeader>
-      <ContactList loading={state.loading} data={state.regularContacts} error={state.currentPage !== 1 ? state.error : undefined} onCardClick={(id) => dispatch(addFavoriteContact(id))}/>
+      <ContactList loading={state.loading} data={state.regularContacts} 
+      error={state.currentPage !== 1 ? state.error : undefined} 
+      onCardClick={(id) => dispatch(addFavoriteContact(id))}
+      handleErrorClose={closeErr}
+      />
       <PaginationButton />
 
     </Main>

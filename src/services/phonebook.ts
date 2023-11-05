@@ -37,12 +37,16 @@ query GetContactList (
 `;
 
 export const fetchPhoneBook = async (page: number) => {
+  page = page < 1 ? 1 : page;
   const favIds:string[] = store.getState().phonebook.favoriteIds ?? []
   const response = await client.query({
   query: GET_PHONEBOOK,
   variables: {
     offset: (page - 1) * MAX_CONTACT_PER_PAGE,
     limit: MAX_CONTACT_PER_PAGE,
+    sort: {
+      first_name: "asc"
+    },
     where: {
       _not: {
         id: {
@@ -60,6 +64,9 @@ export const fetchFavoritePhoneBook = async () => {
   const response = await client.query({
     query: GET_PHONEBOOK,
     variables: {
+      sort: {
+        first_name: "asc"
+      },
       where: {
         id: {
           _in: favIds

@@ -1,3 +1,4 @@
+import { MAX_CONTACT_PER_PAGE } from "@/config/consts";
 import { client } from "@/config/gql";
 import { AppThunk } from "@/redux";
 import { GET_PHONEBOOK, fetchFavoritePhoneBook, fetchPhoneBook } from "@/services/phonebook";
@@ -32,7 +33,12 @@ const phonebook = createSlice({
       state.favoriteIds = state.favoriteIds.filter((id) => id !== action.payload);
     },
     setCurrentPage: (state, action) => {
-      state.currentPage = action.payload;
+      const maxPage = Math.ceil(state.length / MAX_CONTACT_PER_PAGE)
+      if (action.payload < 1) {
+        state.currentPage = 1;
+      } else if (action.payload > maxPage && maxPage > 0) {
+        state.currentPage = maxPage;
+      }
     },
     setFavoriteList: (state, action) => {
       state.favoriteContacts = action.payload;
@@ -48,12 +54,15 @@ const phonebook = createSlice({
     },
     setError: (state, action) => {
       state.error = action.payload;
+    },
+    clearError: (state) => {
+      state.error = undefined;
     }
   },
 });
 
 export default phonebook.reducer;
-export const {addFavorite, removeFavorite, setCurrentPage, setFavoriteList, setRegularList, setLength, setLoading, setError} = phonebook.actions;
+export const {addFavorite, removeFavorite, setCurrentPage, setFavoriteList, setRegularList, setLength, setLoading, setError, clearError} = phonebook.actions;
 
 export const fetchContacts = (page: number): AppThunk => {
   return async (dispatch) => {
@@ -69,7 +78,7 @@ export const fetchContacts = (page: number): AppThunk => {
         dispatch(setError(e.message));
       } else {
         console.error(e);
-        dispatch((e as any)?.message ?? 'Unknown error when fetching contacts');
+        dispatch(setError((e as any)?.message ?? 'Unknown error when fetching contacts'));
       }
     }
   };
