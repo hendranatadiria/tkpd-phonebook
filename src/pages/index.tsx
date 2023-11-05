@@ -1,7 +1,8 @@
 import styled from '@emotion/styled'
 import { Card, CardTitle, TextField, TextHeader } from '@/components/commons';
 import { font } from '@/config/theme';
-import ContactCard from '@/components/phonebook/ContactCard';
+import ContactList from '@/components/phonebook/ContactList';
+import FavoriteList from '@/components/phonebook/FavoriteList';
 
 const Main = styled.main`
   max-width: 600px;
@@ -12,29 +13,28 @@ const Main = styled.main`
 
   const SearchField = styled(TextField)`
   margin-bottom: 1rem;
+  background-color: #e0e0e0;
+  padding: 1rem;
+  border: none;
+  &::placeholder {
+    color: #9e9e9e;
+  }
+  &:focus {
+    outline: none;
+  }
   `
 
-  const FormTextField = styled(TextField)`
-  margin-bottom: 0.5rem;
-  `;
-
 export default function Home() {
+
   return (
     <Main
       className={`${font.className}`}
     >
       <TextHeader>Phonebook</TextHeader>
-      <SearchField name="searchBox" placeholder='Search your contact here...'>
+      <SearchField name="searchBox" placeholder='Search your contact here...' />
+      <FavoriteList />
+      <ContactList />
 
-      </SearchField>
-      <ContactCard firstName='John' lastName='Doe' phoneNumber='08123456789' />
-
-      <Card>
-        <CardTitle style={{marginBottom: '1rem'}}>Add New Contact</CardTitle>
-        <FormTextField name="firstName" placeholder='First Name' />       
-        <FormTextField name="lastName" placeholder='Last Name' />       
-        <FormTextField name="phoneNumber" placeholder='Phone Number' />
-      </Card>
     </Main>
   )
 }
