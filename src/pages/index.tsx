@@ -1,18 +1,10 @@
 import styled from '@emotion/styled'
 import { AllCapsHeader, Separator, TextField, TextHeader } from '@/components/commons';
-import { font } from '@/config/theme';
 import ContactList from '@/components/phonebook/ContactList';
 import { useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux';
 import { addFavoriteContact, clearError, fetchContacts, fetchFavorites, removeFavoriteContact } from '@/redux/slices/phonebook';
 import PaginationButton from '@/components/phonebook/PaginationButton';
-
-const Main = styled.main`
-  max-width: 600px;
-  min-height: 100vh;
-  margin: 0 auto;
-  padding: 1rem;
-  `;
 
   const SearchField = styled(TextField)`
   margin-bottom: 1rem;
@@ -25,6 +17,12 @@ const Main = styled.main`
   &:focus {
     outline: none;
   }
+  `
+
+  const FloatingDiv = styled.div`
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
   `
 
 export default function Home() {
@@ -45,9 +43,7 @@ export default function Home() {
   
 
   return (
-    <Main
-      className={`${font.className}`}
-    >
+    <>
       <TextHeader>Phonebook</TextHeader>
       <SearchField name="searchBox" placeholder='Search your contact here...' />
       
@@ -70,7 +66,6 @@ export default function Home() {
       handleErrorClose={closeErr}
       />
       <PaginationButton />
-
-    </Main>
+    </>
   )
 }
