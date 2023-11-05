@@ -19,7 +19,7 @@ const Center = styled.div`
   height: 100%;
 `;
 
-export default function ContactList({loading, error, data} : {loading: boolean, error?: string, data: Contact[]}) {
+export default function ContactList({loading, error, data, onCardClick} : {loading: boolean, error?: string, data: Contact[], onCardClick?: (id:number) => any}) {
   const phoneBookState = useAppSelector(state => state.phonebook);
 
   return (
@@ -34,6 +34,11 @@ export default function ContactList({loading, error, data} : {loading: boolean, 
        firstName={contact.first_name}
        lastName={contact.last_name}
         phoneNumber={contact.phones[0]?.number}
+        onClick={ () => {
+          if (onCardClick !== undefined) {
+            onCardClick(contact.id)}
+          }
+      }
        />)}
       )}
     </div>

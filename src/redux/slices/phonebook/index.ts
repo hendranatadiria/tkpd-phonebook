@@ -5,7 +5,7 @@ import { ApolloError } from "@apollo/client";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: {
-  favoriteIds: string[];
+  favoriteIds: number[];
   favoriteContacts: Contact[];
   regularContacts: Contact[];
   currentPage: number;
@@ -93,7 +93,7 @@ export const fetchFavorites = (): AppThunk => {
   };
 }
 
-export const addFavoriteContact = (id: string): AppThunk => {
+export const addFavoriteContact = (id: number): AppThunk => {
   return async (dispatch, getState) => {
     dispatch(addFavorite(id));
     dispatch(fetchFavorites());
@@ -101,7 +101,7 @@ export const addFavoriteContact = (id: string): AppThunk => {
   };
 }
 
-export const removeFavoriteContact = (id: string): AppThunk => {
+export const removeFavoriteContact = (id: number): AppThunk => {
   return async (dispatch, getState) => {
     dispatch(removeFavorite(id));
     dispatch(fetchFavorites());
