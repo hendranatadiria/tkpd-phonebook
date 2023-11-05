@@ -14,6 +14,9 @@ const Main = styled.main`
   margin-bottom: 1rem;
   `
 
+  const FormTextField = styled(TextField)`
+  margin-bottom: 0.5rem;
+  `;
 
 export default function Home() {
   return (
@@ -25,6 +28,13 @@ export default function Home() {
 
       </SearchField>
       <ContactCard firstName='John' lastName='Doe' phoneNumber='08123456789' />
+
+      <Card>
+        <CardTitle style={{marginBottom: '1rem'}}>Add New Contact</CardTitle>
+        <FormTextField name="firstName" placeholder='First Name' />       
+        <FormTextField name="lastName" placeholder='Last Name' />       
+        <FormTextField name="phoneNumber" placeholder='Phone Number' />
+      </Card>
     </Main>
   )
 }
