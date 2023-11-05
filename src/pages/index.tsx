@@ -1,10 +1,13 @@
 import styled from '@emotion/styled'
-import { AllCapsHeader, Separator, TextField, TextHeader } from '@/components/commons';
+import { AllCapsHeader, Separator, StyledButton, TextField, TextHeader } from '@/components/commons';
 import ContactList from '@/components/phonebook/ContactList';
 import { useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux';
 import { addFavoriteContact, clearError, fetchContacts, fetchFavorites, removeFavoriteContact } from '@/redux/slices/phonebook';
 import PaginationButton from '@/components/phonebook/PaginationButton';
+import { PlusOutlined } from '@ant-design/icons';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
 
   const SearchField = styled(TextField)`
   margin-bottom: 1rem;
@@ -27,6 +30,7 @@ import PaginationButton from '@/components/phonebook/PaginationButton';
 
 export default function Home() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const state = useAppSelector(state => state.phonebook)
 
   useEffect(() => {
@@ -40,10 +44,18 @@ export default function Home() {
   const closeErr = useCallback(() => {
     dispatch(clearError());
   }, [dispatch]);
+
+  const navigateAddNew = useCallback(() => {
+    router.push('/add-new');
+  }, [router]);
+    
   
 
   return (
     <>
+    <Head>
+      <title>Phonebook - Tokopedia WPE Test Project - Bernardinus Hendra Natadiria</title>
+    </Head>
       <TextHeader>Phonebook</TextHeader>
       <SearchField name="searchBox" placeholder='Search your contact here...' />
       
@@ -66,6 +78,11 @@ export default function Home() {
       handleErrorClose={closeErr}
       />
       <PaginationButton />
+
+      <FloatingDiv>
+        <StyledButton onClick={navigateAddNew}><PlusOutlined /> New Contact</StyledButton>
+      </FloatingDiv>
+      
     </>
   )
 }

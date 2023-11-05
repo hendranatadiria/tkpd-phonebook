@@ -1,7 +1,7 @@
 import { MAX_CONTACT_PER_PAGE } from "@/config/consts";
 import { client } from "@/config/gql";
 import { AppThunk } from "@/redux";
-import { GET_PHONEBOOK, fetchFavoritePhoneBook, fetchPhoneBook } from "@/services/phonebook";
+import { GET_PHONEBOOK, INSERT_CONTACT, fetchFavoritePhoneBook, fetchPhoneBook } from "@/services/phonebook";
 import { ApolloError } from "@apollo/client";
 import { createSlice } from "@reduxjs/toolkit";
 

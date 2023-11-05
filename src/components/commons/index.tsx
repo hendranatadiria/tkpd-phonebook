@@ -8,3 +8,7 @@ export {default as Separator} from './Separator';
 export {default as Main} from './Main';
 export {default as IconButton} from './IconButton';
 export {default as Center} from './Center';
+export {default as BottomBarContainer} from './BottomBarContainer';
+export {default as StyledButton} from './StyledButton';
+export {default as OutlinedButton} from './OutlinedButton';
+export {default as HelperText} from './HelperText';

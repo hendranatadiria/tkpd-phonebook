@@ -76,3 +76,66 @@ export const fetchFavoritePhoneBook = async () => {
   })
   return response.data;
 }
+
+export const INSERT_CONTACT = gql`
+mutation AddContactWithPhones(
+  $first_name: String!, 
+  $last_name: String!, 
+  $phones: [phone_insert_input!]!
+  ) {
+insert_contact(
+    objects: {
+        first_name: $first_name, 
+        last_name: $last_name, 
+        phones: { 
+            data: $phones
+          }
+      }
+  ) {
+  returning {
+    first_name
+    last_name
+    id
+    phones {
+      number
+    }
+  }
+}
+}
+`;
+
+export const FIND_PHONE_NUMBER = gql`
+query FindPhoneNumber(
+  $phoneNumbers: [String!]
+) {
+  phone (
+    where: {
+      number: {
+        _in: $phoneNumbers
+      }
+    }
+  ) {
+    number
+  }
+}
+`;
+
+export const findPhoneNumber = async (phoneNumbers: string[]) => {
+  const response = await client.query({
+    query: FIND_PHONE_NUMBER,
+    variables: {
+      phoneNumbers
+    }
+  })
+  return response.data;
+}
+
+export const DELETE_CONTACT = gql`
+mutation DeleteById($id: Int!) {
+  delete_contact_by_pk(id: $id) {
+    first_name
+    last_name
+    id
+  }
+}
+`;
