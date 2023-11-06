@@ -1,7 +1,7 @@
 import { AllCapsHeader, BottomBarContainer, HelperText, IconButton, OutlinedButton, StyledButton, TextField, TextHeader } from '@/components/commons'
 import { colors } from '@/config/theme';
 import { useAppDispatch, useAppSelector } from '@/redux';
-import { fetchContacts } from '@/redux/slices/phonebook';
+import { fetchContacts, fetchFavorites } from '@/redux/slices/phonebook';
 import { insertContactSchema } from '@/schema/phonebook';
 import { INSERT_CONTACT } from '@/services/phonebook';
 import {LeftOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
@@ -71,8 +71,16 @@ const TitleButton = styled.button`
 
 export default function AddNewPage() {
     const router = useRouter();
-    const [addContact, {data, loading, error}] = useMutation(INSERT_CONTACT);
     const dispatch = useAppDispatch();
+
+    const [addContact] = useMutation(INSERT_CONTACT, {
+        onCompleted: () => {
+            console.log("FINISHED!!!");
+            dispatch(fetchContacts(state.currentPage));
+            dispatch(fetchFavorites());
+            router.push('/');
+        }
+    });
     const state = useAppSelector(state => state.phonebook);
 
     const initialValues: {
@@ -88,22 +96,20 @@ export default function AddNewPage() {
     const formik = useFormik({
         initialValues,
         validationSchema: insertContactSchema,
-        onSubmit: async (values) => {
+        onSubmit: (values) => {
             const {first_name, last_name, phones} = values;
             const mappedPhones = phones.map(phone => ({number: phone}));
             try {
 
-            const response = await addContact({
+            addContact({
                 variables: {
                     first_name,
                     last_name,
                     phones: mappedPhones
                 }
+            }).then((response) => {
+                console.log(response);
             });
-
-            dispatch(fetchContacts(state.currentPage));
-            console.log(response);
-            router.push('/');
             } catch (e) {
                 console.log(e);
                 if (e instanceof ApolloError) {

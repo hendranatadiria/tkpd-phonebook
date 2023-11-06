@@ -36,41 +36,92 @@ query GetContactList (
 }
 `;
 
-export const fetchPhoneBook = async (page: number) => {
+export const fetchPhoneBook = async (page: number, query?: string) => {
   page = page < 1 ? 1 : page;
   const favIds:string[] = store.getState().phonebook.favoriteIds ?? []
   const response = await client.query({
   query: GET_PHONEBOOK,
+  fetchPolicy: "network-only",
   variables: {
     offset: (page - 1) * MAX_CONTACT_PER_PAGE,
     limit: MAX_CONTACT_PER_PAGE,
-    sort: {
+    order_by: {
       first_name: "asc"
     },
     where: {
-      _not: {
-        id: {
-          _in: favIds
-        }
-      }
+      _and: [
+        {
+          _not: {
+            id: {
+              _in: favIds
+            }}
+        },
+        ...(query !== undefined ? [{
+          _or: [
+            {
+              first_name: {
+                _ilike: `%${query}%`
+              }
+            },
+            {
+              last_name: {
+                _ilike: `%${query}%`
+              }
+            },
+            {
+              phones: {
+                number: {
+                  _ilike: `%${query}%`
+                }
+              }
+            }
+          ]
+        }] : [])
+      ]
     }
   },
 })
 return response.data;
 }
 
-export const fetchFavoritePhoneBook = async () => {
+export const fetchFavoritePhoneBook = async (query?:string) => {
   const favIds:string[] = store.getState().phonebook.favoriteIds ?? []
   const response = await client.query({
     query: GET_PHONEBOOK,
+    fetchPolicy: "network-only",
     variables: {
-      sort: {
+      order_by: {
         first_name: "asc"
       },
       where: {
-        id: {
-          _in: favIds
-        }
+        _and: [
+          {
+            id: {
+              _in: favIds
+            }
+          },
+          ...(query !== undefined ? [{
+            _or: [
+              {
+                first_name: {
+                  _ilike: `%${query}%`
+                }
+              },
+              {
+                last_name: {
+                  _ilike: `%${query}%`
+                }
+              },
+              {
+                phones: {
+                  number: {
+                    _ilike: `%${query}%`
+                  }
+                }
+              }
+            ]
+          }] : [])
+        ]
       }
     }
   })
@@ -139,3 +190,36 @@ mutation DeleteById($id: Int!) {
   }
 }
 `;
+
+export const removeContact = async (id: number) => {
+  const response = await client.mutate({
+    mutation: DELETE_CONTACT,
+    variables: {
+      id,
+    }
+  })
+  return response.data;
+}
+
+export const GET_CONTACT_BY_ID = gql`
+query GetContactById($id: Int!) {
+  contact_by_pk(id: $id) {
+    first_name
+    last_name
+    id
+    phones {
+      number
+    }
+  }
+}
+`;
+
+export const getContactById = async (id: number) => {
+  const response = await client.query({
+    query: GET_CONTACT_BY_ID,
+    variables: {
+      id,
+    }
+  })
+  return response.data;
+}

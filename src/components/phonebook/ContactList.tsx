@@ -30,7 +30,7 @@ const Alert = ({children, handleClose} : {children: React.ReactNode, handleClose
   )
 }
 
-export default function ContactList({loading, error, data, onCardClick, handleErrorClose} : {loading: boolean, error?: string, data: Contact[], onCardClick?: (id:number) => any, handleErrorClose?: React.MouseEventHandler<HTMLButtonElement> | undefined}) {
+export default function ContactList({loading, error, data, onCardClick, onFavClick, onDelClick,  handleErrorClose} : {loading: boolean, error?: string, data: Contact[], onCardClick?: (id:number) => any, onFavClick?: (id:number) => any, onDelClick?: (id:number) => any, handleErrorClose?: React.MouseEventHandler<HTMLButtonElement> | undefined}) {
   const phoneBookState = useAppSelector(state => state.phonebook);
 
   return (
@@ -45,11 +45,25 @@ export default function ContactList({loading, error, data, onCardClick, handleEr
        firstName={contact.first_name}
        lastName={contact.last_name}
         phoneNumber={contact.phones[0]?.number}
-        onClick={ () => {
+        onClick={
+          () => {
           if (onCardClick !== undefined) {
             onCardClick(contact.id)}
           }
-      }
+        }
+        onFavPressed={
+          () => {
+          if (onFavClick !== undefined) {
+            onFavClick(contact.id)}
+          }
+        }
+        onDelPressed={
+          () => {
+          if (onDelClick !== undefined) {
+            onDelClick(contact.id)}
+          }
+        }
+
        />)}
       )}
     </div>
